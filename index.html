@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shipment Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <link rel="icon" type="image/png" href="Logo.png">
+  <style>
+    body {
+        font-family: 'Poppins', sans-serif;;
+        margin: 0;
+        background: #f4f6f9;
+        color: #333;
+    }
+    .logo-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem 0;
+    }
+
+    .logo {
+      height: 50px;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    .shipment-heading {
+      text-align: center;
+      color: #777; /* Grey color */
+      font-size: 1.5rem;
+      margin-top: 1.5rem;
+      font font-size: 1.7rem;
+    }
+
+    h2 {
+      text-align: center; /* Center the text */
+      color: #777; /* Grey color */
+      font-size: 1.7rem; /* Adjust size to fit the design */
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    main {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    button {
+      width: 100%;
+      padding: 0.8rem;
+      font-size: 1rem;
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #155ab6;
+    }
+    .entry {
+      display: flex;
+      align-items: flex-start;
+      margin-top: 1rem;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #ddd;
+    }
+    .entry i {
+      font-size: 1.5rem;
+      color: #1a73e8;
+    }
+    .entry-details {
+      flex-grow: 1;
+    }
+    .entry-date {
+      color: #444;
+    }
+    .not-found {
+      color: red;
+      text-align: center;
+    }
+
+    /* Blinking Animation */
+    @keyframes blink {
+      0% {
+        color: transparent;
+      }
+      50% {
+        color: #1a73e8; /* Blue color */
+      }
+      100% {
+        color: transparent;
+      }
+    }
+
+    /* Apply the blinking effect to the last shipment update */
+    .last-update {
+      font-size: 1rem;
+      animation: blink 1s infinite; /* 1 second duration, infinitely */
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-wrapper">
+      <img src="head.png" alt="Exglobe Logo" class="logo">
+    </div>
+  </header>
+  <hr>
+  <h2 class="shipment-heading">SHIPMENT TRACKER</h2>
+  <main>
+    <input type="text" id="trackingInput" placeholder="Enter Tracking Number" />
+    <button onclick="trackShipment()"><i class="fas fa-search"></i> Track</button>
+    <div id="result"></div>
+  </main>
+
+  <script>
+    const SHEET_ID = "1hbnqDFx_noNqtnx1Ww9V80RfFQNyLSnFVMRqGJBqxyw";
+    const SHEET_NAME = "UPDATES";
+
+    async function trackShipment() {
+      const trackingNumber = document.getElementById("trackingInput").value.trim().toUpperCase();
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = "<p>Loading...</p>";
+
+      try {
+        const res = await fetch(`https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`);
+        const data = await res.json();
+
+        const filtered = data
+          .filter(row => row["Tracking Number"].toUpperCase() === trackingNumber)
+          .sort((a, b) => new Date(a.Date) - new Date(b.Date));
+
+        if (filtered.length === 0) {
+          resultDiv.innerHTML = `<p class="not-found">No tracking history found for <strong>${trackingNumber}</strong>.</p>`;
+          return;
+        }
+
+        let output = `<h2 style="color: #DDDDDD;">TRACKING : ${trackingNumber}</h2>`;
+        filtered.forEach((entry, index) => {
+          output += `
+            <div class="entry">
+              <i class="fas fa-location-arrow"></i>
+              <div class="entry-details">
+                <div class="entry-date">${entry.Date}</div>
+                <div>${entry["Status Description"]}</div>
+              </div>
+            </div>
+          `;
+        });
+
+        // Add blinking effect to the last shipment update
+        const lastEntry = filtered[filtered.length - 1];
+        output += `
+          <div class="entry">
+            <i class="fas fa-check-circle"></i>
+            <div class="entry-details">
+              <div class="entry-date">${lastEntry.Date}</div>
+              <div class="last-update">Last shipment update: ${lastEntry["Status Description"]}</div>
+            </div>
+          </div>
+        `;
+
+        resultDiv.innerHTML = output;
+      } catch (err) {
+        console.error(err);
+        resultDiv.innerHTML = `<p class="not-found">Error fetching tracking data. Please try again later.</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
