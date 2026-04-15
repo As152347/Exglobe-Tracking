@@ -2,24 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Shipment Tracker</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
   <link rel="icon" type="image/png" href="Logo.png">
+
   <style>
-    body {
-        font-family: 'Poppins', sans-serif;;
-        margin: 0;
-        background: #f4f6f9;
-        color: #333;
+    * {
+      box-sizing: border-box;
     }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: #f4f6f9;
+      color: #333;
+    }
+
     .logo-wrapper {
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 1rem 0;
+      padding: 1.2rem 1rem 0.8rem;
+      background: #fff;
     }
 
     .logo {
@@ -28,98 +38,257 @@
       object-fit: contain;
     }
 
-    .shipment-heading {
+    .page-title {
       text-align: center;
-      color: #777; /* Grey color */
-      font-size: 1.5rem;
-      margin-top: 1.5rem;
-      font font-size: 1.7rem;
-    }
-
-    h2 {
-      text-align: center; /* Center the text */
-      color: #444; /* Grey color */
-      font-size: 1.7rem; /* Adjust size to fit the design */
-      margin-top: 1rem;
-      margin-bottom: 1rem;
-      font-weight: 600;
+      color: #666;
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.5rem;
+      letter-spacing: 0.5px;
     }
 
     main {
-      max-width: 600px;
+      max-width: 760px;
       margin: 2rem auto;
       background: white;
       padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
 
+    .search-box {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
     }
+
     input[type="text"] {
       width: 100%;
-      padding: 1rem;
+      padding: 1rem 1.1rem;
       font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      margin-bottom: 1rem;
+      border: 1px solid #d0d7de;
+      border-radius: 12px;
+      outline: none;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+      font-family: inherit;
     }
+
+    input[type="text"]:focus {
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.12);
+    }
+
     button {
       width: 100%;
-      padding: 0.8rem;
-      font-size: 1rem;
+      padding: 0.95rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
       background-color: #1a73e8;
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: background-color 0.25s ease, transform 0.08s ease;
+      font-family: inherit;
     }
+
     button:hover {
       background-color: #155ab6;
     }
+
+    button:active {
+      transform: scale(0.985);
+    }
+
+    #result {
+      margin-top: 0.5rem;
+    }
+
+    .loading,
+    .not-found,
+    .error-message {
+      text-align: center;
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+
+    .loading {
+      color: #666;
+    }
+
+    .not-found,
+    .error-message {
+      color: #d93025;
+      font-weight: 500;
+    }
+
+    .tracking-card-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #eceff3;
+    }
+
+    .tracking-label {
+      font-size: 0.9rem;
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.35rem;
+    }
+
+    .tracking-number-title {
+      margin: 0;
+      font-size: 1.9rem;
+      color: #1f1f1f;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .latest-status-box {
+      margin-top: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: #e8f0fe;
+      color: #174ea6;
+      padding: 0.75rem 1rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-align: left;
+      max-width: 100%;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .timeline {
+      position: relative;
+      margin-top: 0.5rem;
+    }
+
     .entry {
+      position: relative;
       display: flex;
       align-items: flex-start;
-      margin-top: 1rem;
       gap: 1rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid #ddd;
+      padding: 0 0 1.6rem 0;
     }
-    .entry i {
-      font-size: 1.5rem;
+
+    .entry:last-child {
+      padding-bottom: 0;
+    }
+
+    .icon-column {
+      position: relative;
+      width: 34px;
+      min-width: 34px;
+      display: flex;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .icon-column::after {
+      content: "";
+      position: absolute;
+      top: 36px;
+      bottom: -6px;
+      width: 2px;
+      background: #d8dee6;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .entry:last-child .icon-column::after {
+      display: none;
+    }
+
+    .icon-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #eef4ff;
       color: #1a73e8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      z-index: 1;
+      box-shadow: 0 0 0 6px #fff;
     }
+
+    .entry.latest .icon-badge {
+      background: #e6f4ea;
+      color: #188038;
+    }
+
     .entry-details {
-      flex-grow: 1;
+      flex: 1;
+      background: #fff;
+      border: 1px solid #edf1f5;
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
     }
+
+    .entry.latest .entry-details {
+      background: #f7fbff;
+      border-color: #c6dafc;
+    }
+
     .entry-date {
-      color: #444;
-    }
-    .not-found {
-      color: red;
-      text-align: center;
-    }
-
-    /* Blinking Animation */
-    @keyframes blink {
-      0% {
-        color: transparent;
-      }
-      50% {
-        color: #1a73e8; /* Blue color */
-      }
-      100% {
-        color: transparent;
-      }
+      color: #5f6368;
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 0.35rem;
     }
 
-    /* Apply the blinking effect to the last shipment update */
-    .last-update {
-      font-size: 1rem;
-      animation: blink 1s infinite; /* 1 second duration, infinitely */
+    .entry-status {
+      font-size: 1.08rem;
+      color: #1f1f1f;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .entry.latest .entry-status::after {
+      content: "Latest Update";
+      display: inline-block;
+      margin-left: 0.7rem;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #174ea6;
+      background: #e8f0fe;
+      padding: 0.22rem 0.55rem;
+      border-radius: 999px;
+      vertical-align: middle;
+    }
+
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 1.7rem;
+      }
+
+      main {
+        margin: 1.25rem 1rem 2rem;
+        padding: 1.25rem;
+        border-radius: 16px;
+      }
+
+      .tracking-number-title {
+        font-size: 1.4rem;
+      }
+
+      .entry-status {
+        font-size: 1rem;
+      }
+
+      .entry.latest .entry-status::after {
+        display: block;
+        margin: 0.55rem 0 0;
+        width: fit-content;
+      }
     }
   </style>
 </head>
@@ -129,11 +298,22 @@
       <img src="head.png" alt="Exglobe Logo" class="logo">
     </div>
   </header>
-  <hr>
-  <h2 class="shipment-heading">SHIPMENT TRACKER</h2>
+
+  <h1 class="page-title">SHIPMENT TRACKER</h1>
+
   <main>
-    <input type="text" id="trackingInput" placeholder="Enter Tracking Number" />
-    <button onclick="trackShipment()"><i class="fas fa-search"></i> Track</button>
+    <div class="search-box">
+      <input
+        type="text"
+        id="trackingInput"
+        placeholder="Enter Tracking Number"
+        onkeydown="if(event.key === 'Enter') trackShipment()"
+      />
+      <button onclick="trackShipment()">
+        <i class="fas fa-magnifying-glass"></i> Track
+      </button>
+    </div>
+
     <div id="result"></div>
   </main>
 
@@ -141,56 +321,111 @@
     const SHEET_ID = "1hbnqDFx_noNqtnx1Ww9V80RfFQNyLSnFVMRqGJBqxyw";
     const SHEET_NAME = "UPDATES";
 
+    function getIcon(status) {
+      const text = (status || "").toLowerCase();
+
+      if (text.includes("created")) return "fa-box";
+      if (text.includes("loading")) return "fa-boxes-packing";
+      if (text.includes("transit")) return "fa-truck-fast";
+      if (text.includes("port")) return "fa-ship";
+      if (text.includes("customs")) return "fa-file-circle-check";
+      if (text.includes("clearance")) return "fa-file-circle-check";
+      if (text.includes("delivered")) return "fa-circle-check";
+      if (text.includes("arrival")) return "fa-location-dot";
+      if (text.includes("arrived")) return "fa-location-dot";
+
+      return "fa-location-arrow";
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
     async function trackShipment() {
-      const trackingNumber = document.getElementById("trackingInput").value.trim().toUpperCase();
+      const trackingInput = document.getElementById("trackingInput");
+      const trackingNumber = trackingInput.value.trim().toUpperCase();
       const resultDiv = document.getElementById("result");
-      resultDiv.innerHTML = "<p>Loading...</p>";
+
+      if (!trackingNumber) {
+        resultDiv.innerHTML = `<p class="not-found">Please enter a tracking number.</p>`;
+        return;
+      }
+
+      resultDiv.innerHTML = `<p class="loading">Fetching shipment history...</p>`;
 
       try {
-        const res = await fetch(`https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`);
-        const data = await res.json();
+        const response = await fetch(`https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch sheet data");
+        }
+
+        const data = await response.json();
 
         const filtered = data
-          .filter(row => row["Tracking Number"].toUpperCase() === trackingNumber)
+          .filter(row => ((row["Tracking Number"] || "").trim().toUpperCase() === trackingNumber))
           .sort((a, b) => new Date(a.Date) - new Date(b.Date));
 
         if (filtered.length === 0) {
-          resultDiv.innerHTML = `<p class="not-found">No tracking history found for <strong>${trackingNumber}</strong>.</p>`;
+          resultDiv.innerHTML = `
+            <p class="not-found">
+              No tracking history found for <strong>${escapeHtml(trackingNumber)}</strong>.
+            </p>
+          `;
           return;
         }
 
-        let output = `<h2 style="color: #DDDDDD;">TRACKING : ${trackingNumber}</h2>`;
+        const lastEntry = filtered[filtered.length - 1];
+        const latestStatus = escapeHtml(lastEntry["Status Description"] || "No status available");
+
+        let output = `
+          <div class="tracking-card-header">
+            <div class="tracking-label">Tracking Number</div>
+            <h2 class="tracking-number-title">${escapeHtml(trackingNumber)}</h2>
+            <div class="latest-status-box">
+              <i class="fas fa-circle-check"></i>
+              <span>${latestStatus}</span>
+            </div>
+          </div>
+          <div class="timeline">
+        `;
+
         filtered.forEach((entry, index) => {
+          const isLast = index === filtered.length - 1;
+          const status = escapeHtml(entry["Status Description"] || "No status available");
+          const date = escapeHtml(entry.Date || "No date");
+          const icon = getIcon(entry["Status Description"]);
+
           output += `
-            <div class="entry">
-              <i class="fas fa-location-arrow"></i>
+            <div class="entry ${isLast ? "latest" : ""}">
+              <div class="icon-column">
+                <div class="icon-badge">
+                  <i class="fas ${icon}"></i>
+                </div>
+              </div>
               <div class="entry-details">
-                <div class="entry-date">${entry.Date}</div>
-                <div>${entry["Status Description"]}</div>
+                <div class="entry-date">${date}</div>
+                <div class="entry-status">${status}</div>
               </div>
             </div>
           `;
         });
 
-        // Add blinking effect to the last shipment update
-       filtered.forEach((entry, index) => {
-  const isLast = index === filtered.length - 1;
-
-  output += `
-    <div class="entry ${isLast ? 'latest' : ''}">
-      <i class="fas ${isLast ? 'fa-check-circle' : 'fa-location-arrow'}"></i>
-      <div class="entry-details">
-        <div class="entry-date">${entry.Date}</div>
-        <div>${entry["Status Description"]}</div>
-      </div>
-    </div>
-  `;
-});
-
+        output += `</div>`;
         resultDiv.innerHTML = output;
-      } catch (err) {
-        console.error(err);
-        resultDiv.innerHTML = `<p class="not-found">Error fetching tracking data. Please try again later.</p>`;
+
+      } catch (error) {
+        console.error(error);
+        resultDiv.innerHTML = `
+          <p class="error-message">
+            Error fetching tracking data. Please try again later.
+          </p>
+        `;
       }
     }
   </script>
