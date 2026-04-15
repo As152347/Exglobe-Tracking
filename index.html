@@ -173,16 +173,19 @@
         });
 
         // Add blinking effect to the last shipment update
-        const lastEntry = filtered[filtered.length - 1];
-        output += `
-          <div class="entry">
-            <i class="fas fa-check-circle"></i>
-            <div class="entry-details">
-              <div class="entry-date">${lastEntry.Date}</div>
-              <div class="last-update">Last Shipment Update: ${lastEntry["Status Description"]}</div>
-            </div>
-          </div>
-        `;
+       filtered.forEach((entry, index) => {
+  const isLast = index === filtered.length - 1;
+
+  output += `
+    <div class="entry ${isLast ? 'latest' : ''}">
+      <i class="fas ${isLast ? 'fa-check-circle' : 'fa-location-arrow'}"></i>
+      <div class="entry-details">
+        <div class="entry-date">${entry.Date}</div>
+        <div>${entry["Status Description"]}</div>
+      </div>
+    </div>
+  `;
+});
 
         resultDiv.innerHTML = output;
       } catch (err) {
